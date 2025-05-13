@@ -162,10 +162,10 @@ The heat-stability of *de novo* proteins is greatly increased compared to normal
 The visualize_combined_tm_distributions function generates an overlapping histogram plot comparing the normalized Tm distributions of three models (Models 1-3). The function automatically normalizes distributions using density scaling and uses consistent binning (20 bins) for comparison. 
 
 # Euclidean Distance Calculation
-A critical aspect of this project is the examination of key features that significantly influence immunogenicity predictions. Understanding how these features differ between natural and *de novo proteins* is essential for enhancing the accuracy of predictive models. The two primary features of this analysis are melting temperature (Tm) and peptide length, as highlighted by Quijano et al. (2020). This section evaluates the similarity between peptide sizes in the training and test datasets by calculating the Euclidean distance. This analysis is crucial for comparing top-performing immunogenic prediction models, particularly considering the variability in training strategies and their relevance in immunogenic determination. By assessing the distances between peptide sizes used in the training datasets and those present in the test dataset, we can gain insights into how well the models are likely to perform.
+A critical aspect of this project is the examination of key features that significantly influence immunogenicity predictions. Understanding how these features differ between natural and *de novo proteins* is essential for enhancing the accuracy of predictive models. The two primary features of this analysis are melting temperature (Tm) and protein length, as highlighted by Quijano et al. (2020). This section evaluates the similarity between protein sizes in the training and test datasets by calculating the Euclidean distance. This analysis is crucial for comparing top-performing immunogenic prediction models, particularly considering the variability in training strategies and their relevance in immunogenic determination. By assessing the distances between protein sizes used in the training datasets and those present in the test dataset, we can gain insights into how well the models are likely to perform.
 
 ### Key steps
-The compute_pairwise_distances function calculates the Euclidean distances between standardized features (specifically peptide length and melting temperature) in the training and test datasets. The function outputs an array of distances, where each value represents the distance between a test peptide and the closest training peptide. The function also generates a scatter plot visualizing the training data and the test data color-coded by distance.
+The compute_pairwise_distances function calculates the Euclidean distances between standardized features (specifically protein length and melting temperature) in the training and test datasets. The function outputs an array of distances, where each value represents the distance between a test protein and the closest training protein. The function also generates a scatter plot visualizing the training data and the test data color-coded by distance.
 
 ### Usage Instructions
 *   Prepare Your Datasets: Ensure that both the training and test datasets are in the appropriate format, with relevant features such as 'Length' and 'Tm' included as columns.
@@ -174,13 +174,12 @@ The compute_pairwise_distances function calculates the Euclidean distances betwe
 *   Visualize the Results: The function automatically generates a scatter plot that displays the training data and test data, with the test data points colored according to their distances to the training data.
 
 # Immunogenicity prediction
-An artificial neural network (ANN) from Dhanda *et al.* (2018) predicts the immunogenicity of protein sequences is performed in this section. Unlike traditional methods that rely on HLA binding affinity, this model predicts CD4+ T cell immunogenicity at the population level without needing HLA typing data. By training on validated datasets, it identifies key features that differentiate immunogenic proteins from non-immunogenic ones, resulting in an HLA-agnostic immunogenicity score. 
+Our pipeline incorporates both individual and ensemble prediction approaches. Base models such as an artificial neural network (ANN) from Dhanda *et al.* (2018) predicts the immunogenicity of protein sequences are performed in this section. Unlike traditional methods that rely on HLA binding affinity, this ANN model predicts CD4+ T cell immunogenicity at the population level without needing HLA typing data. By training on validated datasets, it identifies key features that differentiate immunogenic proteins from non-immunogenic ones, resulting in an HLA-agnostic immunogenicity score. Test data are run by two additional models (Models 2 and 3) with complementary prediction strategies in the example code. 
+
+After running the three base models, a function called create_ensemble_predictions dynamically selects predictions from the model with minimum feature-space distance for each test point. It uses standardized Euclidean distance of key features (Tm, Length) to determine model proximity.
 
 ### Output 
-For classification, we apply an immunogenicity score threshold of 70, above which proteins are excluded as
-candidates that are predicted unlikely to be immunogenic. This cutoff was empirically
-derived from immunogenicity prediction benchmarks, where it achieves >99% specificity
-with minimized false positives.
+For classification, we apply a model-specific immunogenicity score threshold (e.g. 70 for the ANN model), above which proteins are excluded as candidates that are predicted unlikely to be immunogenic. This cutoff was empirically derived from immunogenicity prediction benchmarks, where it achieves >99% specificity with minimized false positives.
 
 The function returns a binary list representing the immunogenicity status of each protein, where a value of '1' indicates immunogenic and '0' indicates non-immunogenic. This information is subsequently added as a new column to the cleaned dataset and exported to an Excel file for further analysis.
 
@@ -190,6 +189,7 @@ The function returns a binary list representing the immunogenicity status of eac
 *   The output file should be in the format of "CD4_Prediction_{file_num}.csv"
 *   Those files should be put in the Data folder; and directory path should be re-run to include those new files that include immunogenicity scores of the input protein sequences.
 *   The output from model 1 is then processed using a function called process_model_prediction. It iterates over the specified input files (named according to the base_filename), reading the unique protein numbers from each file. The unique protein numbers are adjusted based on their corresponding file number, and each immunogenic sequence is marked as '1' in the output list.
+*   Then, to run the consensus model, a function called create_ensemble_predictions dynamically selects predictions from one of the base models with minimum feature-space distance for each test point.
 
 # Evaluating Immunogenicity Prediction
 To assess the predictive power of the immunogenic predictor model, the predicted immunogenicity scores can be compared against experimental results of the control proteins included in the test dataset. This evaluation employs a confusion matrix to visualize the classifications of true immunogenic and non-immunogenic proteins, as well as a calculation of the balanced accuracy and the F1 score.
