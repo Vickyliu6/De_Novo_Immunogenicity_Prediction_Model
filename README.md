@@ -9,6 +9,7 @@ Welcome to our project repository! This project is designed to predict the immun
 - Euclidean Distance Calculation
 - Immunogenicity prediction
 - Evaluating Immunogenicity Prediction
+- Immunogenic Prediction of *De Novo* Proteins
 - References
 
 
@@ -190,10 +191,10 @@ The function returns a binary list representing the immunogenicity status of eac
 *   Those files should be put in the Data folder; and directory path should be re-run to include those new files that include immunogenicity scores of the input protein sequences.
 *   The output from model 1 is then processed using a function called process_model_prediction. It iterates over the specified input files (named according to the base_filename), reading the unique protein numbers from each file. The unique protein numbers are adjusted based on their corresponding file number, and each immunogenic sequence is marked as '1' in the output list.
 
-## Evaluation of Immunogenicity Prediction
+# Evaluating Immunogenicity Prediction
 To assess the predictive power of the immunogenic predictor model, the predicted immunogenicity scores can be compared against experimental results of the control proteins included in the test dataset. This evaluation employs a confusion matrix to visualize the classifications of true immunogenic and non-immunogenic proteins, as well as a calculation of the balanced accuracy and the F1 score.
 
-### Performance Metrics
+## Performance Metrics
 
 *   Balanced Accuracy: This metric accounts for class imbalances by averaging the sensitivity and specificity, providing a more accurate representation of model performance in datasets where the classes are not evenly distributed.
 
@@ -201,7 +202,7 @@ To assess the predictive power of the immunogenic predictor model, the predicted
 
 *   Confusion Matrix: The confusion matrix visually summarizes the model's classification results, allowing us to identify specific areas where the model overpredicts or underpredicts immunogenicity.
 
-### Usage Instructions
+## Usage Instructions
 To run the evaluation, the true immunogenicity scores and the predicted scores are extracted from the filtered_test_df DataFrame. The metrics are then computed by calling the immunogenicity_model_metrics function and the plot_combined_metrics function, which generate visualizations of the performance metrics and confusion matrix.
 
 # Immunogenic Prediction of *De Novo* Proteins
