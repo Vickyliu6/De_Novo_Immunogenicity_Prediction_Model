@@ -1,16 +1,15 @@
 # Modeling Immunogenicity of *De Novo* Proteins
-Welcome to our project repository! This project is designed to predict the immunogenicity of *de novo* proteins by integrating various data sources and leveraging existing immunogenicity prediction models. 
-
-Our strategy begins with a preprocessing of peptide sequences to ensure that all data is cleaned and standardized for accurate analysis. We then evaluate the immunogenicity of various peptide data sources while also assessing the predictive accuracy of each model. A key component of this project is the examination of important features that play a significant role in determining immunogenicity, especially as these features can differ noticeably between natural proteins and *de novo* proteins. The primary features we focus on are melting temperature (Tm) and peptide length (Quijano *et al*., 2020). We compare these attributes between the peptides being evaluated and the training dataset to understand how they relate to the model's predictive capabilities, providing insights into what influences immunogenicity predictions.
+Welcome to our project repository! This project is designed to predict the immunogenicity of *de novo* proteins by integrating various data sources and leveraging existing immunogenicity prediction models. Our strategy begins with a preprocessing of protein sequences to ensure that all data is cleaned and standardized for accurate analysis. A key component of this project is the examination of important features that play a significant role in determining immunogenicity, especially as these features can differ noticeably between natural proteins and *de novo* proteins. The primary features we focus on are melting temperature (Tm) and protein length (Quijano *et al*., 2020). We compare these attributes between the proteins being evaluated and the training dataset to understand how they relate to the model's predictive capabilities, providing insights into what influences immunogenicity predictions. We eventually evaluate the immunogenicity of various protein data sources while also assessing the predictive accuracy of each model.
 
 # Table of Content
 - Data Input Requirements
 - Data Input Cleanup
 - Melting Temperature Prediction
 - Visualization of Input Datasets
+- Euclidean Distance Calculation
 - Immunogenicity prediction
 - Evaluating Immunogenicity Prediction
-- Euclidean Distance Calculation
+- Immunogenic Prediction of *De Novo* Proteins
 - References
 
 
@@ -51,13 +50,11 @@ MCDLPQ,166,54.9079,clinically approved,0
 In this section, we outline the process for cleaning the datasets to ensure it is suitable for further analysis and modeling in the context of immunogenicity prediction. The cleaning process includes several critical steps that enhance the data quality by removing duplicate entries, filtering out unsuitable sequences, and preparing the dataset for effective utilization in immunogenicity prediction models.
 
 ### Key Steps:
-*  Remove Duplicates: The first step involves deduplicating the test dataset to guarantee that each peptide sequence is unique. This helps prevent redundancy in the analysis and ensures that all data points contribute meaningfully to model training and evaluation.
+*  Remove Duplicates: The first step involves deduplicating the test dataset to guarantee that each protein sequence is unique. This helps prevent redundancy in the analysis and ensures that all data points contribute meaningfully to model training and evaluation.
 
-*  Filter Peptides by Length: Peptides shorter than 15 amino acids are excluded from the dataset, as such sequences are incompatible with many CD4 T cell prediction models.
+*  Filter Proteins by Length: Proteins shorter than 15 amino acids are excluded from the dataset, as such sequences are incompatible with many CD4 T cell prediction models.
 
 *  Handle Missing Values: To enable accurate data analysis, entries marked as "N/A" in the 'Immunogenic Score' column are converted to true NaN values. This step ensures that missing values are properly recognized by analytical tools and do not introduce biases in the model predictions.
-
-*  Prepare Peptide List: A list of unique, filtered peptide sequences is generated for integration into the immunogenicity prediction models. This final list is essential for ensuring that the data fed into the models is clean, well-structured, and ready for predictive analysis. In some cases, models require data inputs to go in batches of 100 datapoints. The code to split the dataset into batches of 100 is also provided.
 
 ### Usage Instructions
 *  Input File Preparation: Ensure that your input files are properly formatted and placed in an accessible directory.
@@ -75,7 +72,7 @@ deepSTABp is a deep learning tool developed to predict the melting temperature (
 ### Online
 Web Interface: Directly predict melting temperatures by visiting the deepSTABp web https://csb-deepstabp.bio.rptu.de/. It is important to mention that the highest number of sequences allowed in one file is 1000.
 
-If a couple of 1000 sequences require Tm prediction, a code to split the batches of 1000 is provided and recommended.
+If a couple of 1000 sequences require Tm prediction, a code to split the batches of 1000 is recommended and provided in function process_peptide_batches_Tm.
 
 ### Local
 If more than 1000 sequences require Tm prediction, a local usage is recommended.
@@ -143,82 +140,86 @@ python predict_cpu.py <filepath> -g growthtemp<int> -m measurementcondition<str>
 ```
 
 # Visualization of Input Datasets
-This section includes visualizations for the distribution of peptide length and melting temperature (Tm) for the input datasets. These plots help in understanding the data distribution and characteristics.
+This section includes visualizations for the distribution of protein length and melting temperature (Tm) for the input datasets. These plots help in understanding the data distribution and characteristics.
 
 ## Temperature Melting (Tm) Distribution
-To visualize the distribution of melting temperatures (Tm) from the dataset, the code provided could be use for this purpose.
+To visualize the distribution of melting temperatures (Tm) from the dataset, the code provided in functions plot_peptide_distribution, plot_peptide_distribution_axis_break, visualize_de_novo_tm_distribution, and visualize_combined_tm_distribution could be used for this purpose.
 
-## Peptide Length Distribution
-When analyzing peptide datasets, it is common to encounter certain lengths that are predominantly more frequent than others. This disparity can make it difficult to interpret the distribution of less common lengths, as the presence of a large peak can obscure lower-frequency values.
+## Protein Length Distribution
+When analyzing protein datasets, it is common to encounter certain lengths that are predominantly more frequent than others. This disparity can make it difficult to interpret the distribution of less common lengths, as the presence of a large peak can obscure lower-frequency values.
 
 To address this challenge, we present two types of visualizations:
 
-*   Linear Frequency Plot: This plot displays the length distribution on a standard linear scale. It provides a general overview of the data, highlighting the most common peptide lengths.
-*   Axis-Break Plot: This plot features an axis break to allow for a clearer visualization of both high-frequency and low-frequency peptide lengths. By breaking the axis, we can more effectively show the distribution of less common lengths while still retaining the information from the more frequently occurring lengths.
+*   Linear Frequency Plot: This plot displays the length distribution on a standard linear scale. It provides a general overview of the data, highlighting the most common protein lengths.
+*   Axis-Break Plot: This plot features an axis break to allow for a clearer visualization of both high-frequency and low-frequency protein lengths. By breaking the axis, we can more effectively show the distribution of less common lengths while still retaining the information from the more frequently occurring lengths.
 
-We recommend running both plots. The linear frequency plot serves as a guide to identify which ranges of lengths are particularly prominent, while the axis-break plot allows for a focused examination of both the common and rare peptide lengths in the dataset.
+We recommend running both plots. The linear frequency plot serves as a guide to identify which ranges of lengths are particularly prominent, while the axis-break plot allows for a focused examination of both the common and rare protein lengths in the dataset.
 
 ## Visualization of *De Novo* Proteins' Tm Distribution
-The heat-stability of *de novo* proteins is greatly increased compared to normal proteins. In order to highlight this difference within the test dataset, the following code specifically visualizes the melting temperature (Tm) distribution of *de novo* proteins within the test dataset.
+The heat-stability of *de novo* proteins is greatly increased compared to normal proteins. In order to highlight this difference within the test dataset, code within the function visualize_de_novo_tm_distribution specifically visualizes the melting temperature (Tm) distribution of *de novo* proteins within the test dataset.
 
-# Immunogenicity prediction
-An artificial neural network (ANN) from Dhanda *et al.* (2018) predicts the immunogenicity of peptide sequences is performed in this section. Unlike traditional methods that rely on HLA binding affinity, this model predicts CD4+ T cell immunogenicity at the population level without needing HLA typing data. By training on validated datasets, it identifies key features that differentiate immunogenic peptides from non-immunogenic ones, resulting in an HLA-agnostic immunogenicity score. 
-
-### Output 
-For classification, we apply an immunogenicity score threshold of 70, above which peptides are excluded as
-candidates that are predicted unlikely to be immunogenic. This cutoff was empirically
-derived from immunogenicity prediction benchmarks, where it achieves >99% specificity
-with minimized false positives.
-
-The function returns a binary list representing the immunogenicity status of each peptide, where a value of '1' indicates immunogenic and '0' indicates non-immunogenic. This information is subsequently added as a new column to the cleaned dataset and exported to an Excel file for further analysis.
-
-### Usage Instructions
-*   Input the peptides into the webpage platform (http://tools.iedb.org/deimmunization/) following the structure: "Model{model_number}_peptide_batch_{batch_number}.txt" to run the Model 1.
-*   The output file should be in the format of "CD4_Prediction_{file_num}.csv"
-*   Those files should be put in the Data folder; and directory path should be re-run to include those new files that include immunogenicity scores of the input peptide sequences.
-*   The output from model 1 is then processed. It iterates over the specified input files (named according to the base_filename), reading the unique protein numbers from each file. The unique protein numbers are adjusted based on their corresponding file number, and each immunogenic sequence is marked as '1' in the output list.
-
-  ## Immunogenic Prediction of *De Novo* Proteins
-In this section, the predicted immunogenicity of *de novo* proteins is visualized as immunogenic and non-immunogenic, based on the model’s output. This distribution helps in the evaluation of trends and patterns in the predictive models.
-
-### Key Steps
-The function takes in a filtered_test_df DataFrame, which contains the immunogenicity predictions for the peptides, and an optional parameter model_name to label the plot appropriately.
-
-*   Identify Missing Scores: The function identifies which peptides have missing immunogenicity scores. Those indicate that they are *de novo* proteins within the dataset.
-
-*   Count Predictions: It counts how many peptides are classified as immunogenic (marked as 1) and how many are classified as non-immunogenic (marked as 0). This helps in understanding the model's predictions and the distribution of these classes.
-
-*   Create Bar Plot: A bar plot is generated to visually represent the counts of immunogenic and non-immunogenic peptides. Each category is displayed in a different color, making it easy to distinguish between the two.
-
-### Usage Instructions 
-*   Prepare the DataFrame: Ensure that the filtered_test_df DataFrame is populated with the immunogenicity predictions from your model, including a column for the 'Immunogenic Score' and a unique identifier for each peptide.
-*   Execute the Visualization Function: Run the de_novo_protein_predictions function, providing the prepared DataFrame and display the bar plot that illustrates the distribution of immunogenicity predictions.
-
-# Evaluation of Immunogenicity Prediction
-To assess the predictive power of the immunogenic predictor model, the predicted immunogenicity scores can be compared against experimental results of the control peptides included in the test dataset. This evaluation employs a confusion matrix to visualize the classifications of true immunogenic and non-immunogenic peptides, as well as a calculation of the balanced accuracy and the F1 score.
-
-### Performance Metrics
-
-*   Balanced Accuracy: This metric accounts for class imbalances by averaging the sensitivity and specificity, providing a more accurate representation of model performance in datasets where the classes are not evenly distributed.
-
-*   F1 Score: This metric balances precision and recall, offering a single value that reflects the model's ability to correctly identify both immunogenic and non-immunogenic peptides.
-
-*   Confusion Matrix: The confusion matrix visually summarizes the model's classification results, allowing us to identify specific areas where the model overpredicts or underpredicts immunogenicity.
-
-### Usage Instructions
-To run the evaluation, the true immunogenicity scores and the predicted scores are extracted from the filtered_test_df DataFrame. The metrics are then computed by calling the immunogenicity_model_metrics function, which generates visualizations of the performance metrics and confusion matrix.
+## Visualization of Tm Distribution Across Models
+The visualize_combined_tm_distributions function generates an overlapping histogram plot comparing the normalized Tm distributions of three models (Models 1-3). The function automatically normalizes distributions using density scaling and uses consistent binning (20 bins) for comparison. 
 
 # Euclidean Distance Calculation
-A critical aspect of this project is the examination of key features that significantly influence immunogenicity predictions. Understanding how these features differ between natural and *de novo proteins* is essential for enhancing the accuracy of predictive models. The two primary features of this analysis are melting temperature (Tm) and peptide length, as highlighted by Quijano et al. (2020). This section evaluates the similarity between peptide sizes in the training and test datasets by calculating the Euclidean distance. This analysis is crucial for comparing top-performing immunogenic prediction models, particularly considering the variability in training strategies and their relevance in immunogenic determination. By assessing the distances between peptide sizes used in the training datasets and those present in the test dataset, we can gain insights into how well the models are likely to perform.
+A critical aspect of this project is the examination of key features that significantly influence immunogenicity predictions. Understanding how these features differ between natural and *de novo proteins* is essential for enhancing the accuracy of predictive models. The two primary features of this analysis are melting temperature (Tm) and protein length, as highlighted by Quijano et al. (2020). This section evaluates the similarity between protein sizes in the training and test datasets by calculating the Euclidean distance. This analysis is crucial for comparing top-performing immunogenic prediction models, particularly considering the variability in training strategies and their relevance in immunogenic determination. By assessing the distances between protein sizes used in the training datasets and those present in the test dataset, we can gain insights into how well the models are likely to perform.
 
 ### Key steps
-The compute_pairwise_distances function calculates the Euclidean distances between standardized features (specifically peptide length and melting temperature) in the training and test datasets. The function outputs an array of distances, where each value represents the distance between a test peptide and the closest training peptide. The function also generates a scatter plot visualizing the training data and the test data color-coded by distance.
+The compute_pairwise_distances function calculates the Euclidean distances between standardized features (specifically protein length and melting temperature) in the training and test datasets. The function outputs an array of distances, where each value represents the distance between a test protein and the closest training protein. The function also generates a scatter plot visualizing the training data and the test data color-coded by distance.
 
 ### Usage Instructions
 *   Prepare Your Datasets: Ensure that both the training and test datasets are in the appropriate format, with relevant features such as 'Length' and 'Tm' included as columns.
 
 *   Run the Distance Calculation: Call the compute_pairwise_distances function using your training and test DataFrames. 
 *   Visualize the Results: The function automatically generates a scatter plot that displays the training data and test data, with the test data points colored according to their distances to the training data.
+
+# Immunogenicity prediction
+Our pipeline incorporates both individual and ensemble prediction approaches. Base models such as an artificial neural network (ANN) from Dhanda *et al.* (2018) predicts the immunogenicity of protein sequences are performed in this section. Unlike traditional methods that rely on HLA binding affinity, this ANN model predicts CD4+ T cell immunogenicity at the population level without needing HLA typing data. By training on validated datasets, it identifies key features that differentiate immunogenic proteins from non-immunogenic ones, resulting in an HLA-agnostic immunogenicity score. Test data are run by two additional models (Models 2 and 3) with complementary prediction strategies in the example code. 
+
+After running the three base models, a function called create_ensemble_predictions dynamically selects predictions from the model with minimum feature-space distance for each test point. It uses standardized Euclidean distance of key features (Tm, Length) to determine model proximity.
+
+### Output 
+For classification, we apply a model-specific immunogenicity score threshold (e.g. 70 for the ANN model), above which proteins are excluded as candidates that are predicted unlikely to be immunogenic. This cutoff was empirically derived from immunogenicity prediction benchmarks, where it achieves >99% specificity with minimized false positives.
+
+The function returns a binary list representing the immunogenicity status of each protein, where a value of '1' indicates immunogenic and '0' indicates non-immunogenic. This information is subsequently added as a new column to the cleaned dataset and exported to an Excel file for further analysis.
+
+### Usage Instructions
+*  Prepare Protein List: Using the function called process_peptide_batches, a list of unique, filtered protein sequences is generated for integration into the immunogenicity prediction models. This final list is essential for ensuring that the data fed into the models is clean, well-structured, and ready for predictive analysis. In most cases, models require data inputs to go in batches of 1000 or 100 datapoints. This can be tuned by changing a parameter called batch_size.
+*   Input the proteins into the webpage platform (http://tools.iedb.org/deimmunization/) following the structure: "Model{model_number}_peptide_batch_{batch_number}.txt" to run the Model 1.
+*   The output file should be in the format of "CD4_Prediction_{file_num}.csv"
+*   Those files should be put in the Data folder; and directory path should be re-run to include those new files that include immunogenicity scores of the input protein sequences.
+*   The output from model 1 is then processed using a function called process_model_prediction. It iterates over the specified input files (named according to the base_filename), reading the unique protein numbers from each file. The unique protein numbers are adjusted based on their corresponding file number, and each immunogenic sequence is marked as '1' in the output list.
+*   Then, to run the consensus model, a function called create_ensemble_predictions dynamically selects predictions from one of the base models with minimum feature-space distance for each test point.
+
+# Evaluating Immunogenicity Prediction
+To assess the predictive power of the immunogenic predictor model, the predicted immunogenicity scores can be compared against experimental results of the control proteins included in the test dataset. This evaluation employs a confusion matrix to visualize the classifications of true immunogenic and non-immunogenic proteins, as well as a calculation of the balanced accuracy and the F1 score.
+
+## Performance Metrics
+
+*   Balanced Accuracy: This metric accounts for class imbalances by averaging the sensitivity and specificity, providing a more accurate representation of model performance in datasets where the classes are not evenly distributed.
+
+*   F1 Score: This metric balances precision and recall, offering a single value that reflects the model's ability to correctly identify both immunogenic and non-immunogenic proteins.
+
+*   Confusion Matrix: The confusion matrix visually summarizes the model's classification results, allowing us to identify specific areas where the model overpredicts or underpredicts immunogenicity.
+
+## Usage Instructions
+To run the evaluation, the true immunogenicity scores and the predicted scores are extracted from the filtered_test_df DataFrame. The metrics are then computed by calling the immunogenicity_model_metrics function and the plot_combined_metrics function, which generate visualizations of the performance metrics and confusion matrix.
+
+# Immunogenic Prediction of *De Novo* Proteins
+In this section, the predicted immunogenicity of *de novo* proteins is visualized as immunogenic and non-immunogenic, based on the model’s output. This distribution helps in the evaluation of trends and patterns in the predictive models.
+
+## Key Steps
+The function takes in a filtered_test_df DataFrame, which contains the immunogenicity predictions for the proteins, and an optional parameter model_name to label the plot appropriately.
+
+*   Identify Missing Scores: The function identifies which proteins have missing immunogenicity scores. Those indicate that they are *de novo* proteins within the dataset.
+
+*   Count Predictions: It counts how many proteins are classified as immunogenic (marked as 1) and how many are classified as non-immunogenic (marked as 0). This helps in understanding the model's predictions and the distribution of these classes.
+
+*   Create Bar Plot: A bar plot is generated to visually represent the counts of immunogenic and non-immunogenic proteins. Each category is displayed in a different color, making it easy to distinguish between the two.
+
+## Usage Instructions 
+*   Prepare the DataFrame: Ensure that the filtered_test_df DataFrame is populated with the immunogenicity predictions from your model, including a column for the 'Immunogenic Score' and a unique identifier for each protein.
+*   Execute the Visualization Function: Run the de_novo_protein_predictions function and the plot_combined_de_novo_predictions function, providing the prepared DataFrame and display the bar plot that illustrates the distribution of immunogenicity predictions.
 
 # References
 
