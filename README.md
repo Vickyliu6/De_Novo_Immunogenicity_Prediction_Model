@@ -178,23 +178,19 @@ The function returns a binary list representing the immunogenicity status of eac
 *   Those files should be put in the Data folder; and directory path should be re-run to include those new files that include immunogenicity scores of the input protein sequences.
 *   The output from model 1 is then processed using a function called process_model_prediction. It iterates over the specified input files (named according to the base_filename), reading the unique protein numbers from each file. The unique protein numbers are adjusted based on their corresponding file number, and each immunogenic sequence is marked as '1' in the output list.
 
-  ## Immunogenic Prediction of *De Novo* Proteins
-In this section, the predicted immunogenicity of *de novo* proteins is visualized as immunogenic and non-immunogenic, based on the model’s output. This distribution helps in the evaluation of trends and patterns in the predictive models.
+# Euclidean Distance Calculation
+A critical aspect of this project is the examination of key features that significantly influence immunogenicity predictions. Understanding how these features differ between natural and *de novo proteins* is essential for enhancing the accuracy of predictive models. The two primary features of this analysis are melting temperature (Tm) and peptide length, as highlighted by Quijano et al. (2020). This section evaluates the similarity between peptide sizes in the training and test datasets by calculating the Euclidean distance. This analysis is crucial for comparing top-performing immunogenic prediction models, particularly considering the variability in training strategies and their relevance in immunogenic determination. By assessing the distances between peptide sizes used in the training datasets and those present in the test dataset, we can gain insights into how well the models are likely to perform.
 
-### Key Steps
-The function takes in a filtered_test_df DataFrame, which contains the immunogenicity predictions for the proteins, and an optional parameter model_name to label the plot appropriately.
+### Key steps
+The compute_pairwise_distances function calculates the Euclidean distances between standardized features (specifically peptide length and melting temperature) in the training and test datasets. The function outputs an array of distances, where each value represents the distance between a test peptide and the closest training peptide. The function also generates a scatter plot visualizing the training data and the test data color-coded by distance.
 
-*   Identify Missing Scores: The function identifies which proteins have missing immunogenicity scores. Those indicate that they are *de novo* proteins within the dataset.
+### Usage Instructions
+*   Prepare Your Datasets: Ensure that both the training and test datasets are in the appropriate format, with relevant features such as 'Length' and 'Tm' included as columns.
 
-*   Count Predictions: It counts how many proteins are classified as immunogenic (marked as 1) and how many are classified as non-immunogenic (marked as 0). This helps in understanding the model's predictions and the distribution of these classes.
+*   Run the Distance Calculation: Call the compute_pairwise_distances function using your training and test DataFrames. 
+*   Visualize the Results: The function automatically generates a scatter plot that displays the training data and test data, with the test data points colored according to their distances to the training data.
 
-*   Create Bar Plot: A bar plot is generated to visually represent the counts of immunogenic and non-immunogenic proteins. Each category is displayed in a different color, making it easy to distinguish between the two.
-
-### Usage Instructions 
-*   Prepare the DataFrame: Ensure that the filtered_test_df DataFrame is populated with the immunogenicity predictions from your model, including a column for the 'Immunogenic Score' and a unique identifier for each protein.
-*   Execute the Visualization Function: Run the de_novo_protein_predictions function and the plot_combined_de_novo_predictions function, providing the prepared DataFrame and display the bar plot that illustrates the distribution of immunogenicity predictions.
-
-# Evaluation of Immunogenicity Prediction
+## Evaluation of Immunogenicity Prediction
 To assess the predictive power of the immunogenic predictor model, the predicted immunogenicity scores can be compared against experimental results of the control proteins included in the test dataset. This evaluation employs a confusion matrix to visualize the classifications of true immunogenic and non-immunogenic proteins, as well as a calculation of the balanced accuracy and the F1 score.
 
 ### Performance Metrics
@@ -208,17 +204,21 @@ To assess the predictive power of the immunogenic predictor model, the predicted
 ### Usage Instructions
 To run the evaluation, the true immunogenicity scores and the predicted scores are extracted from the filtered_test_df DataFrame. The metrics are then computed by calling the immunogenicity_model_metrics function and the plot_combined_metrics function, which generate visualizations of the performance metrics and confusion matrix.
 
-# Euclidean Distance Calculation
-A critical aspect of this project is the examination of key features that significantly influence immunogenicity predictions. Understanding how these features differ between natural and *de novo proteins* is essential for enhancing the accuracy of predictive models. The two primary features of this analysis are melting temperature (Tm) and peptide length, as highlighted by Quijano et al. (2020). This section evaluates the similarity between peptide sizes in the training and test datasets by calculating the Euclidean distance. This analysis is crucial for comparing top-performing immunogenic prediction models, particularly considering the variability in training strategies and their relevance in immunogenic determination. By assessing the distances between peptide sizes used in the training datasets and those present in the test dataset, we can gain insights into how well the models are likely to perform.
+# Immunogenic Prediction of *De Novo* Proteins
+In this section, the predicted immunogenicity of *de novo* proteins is visualized as immunogenic and non-immunogenic, based on the model’s output. This distribution helps in the evaluation of trends and patterns in the predictive models.
 
-### Key steps
-The compute_pairwise_distances function calculates the Euclidean distances between standardized features (specifically peptide length and melting temperature) in the training and test datasets. The function outputs an array of distances, where each value represents the distance between a test peptide and the closest training peptide. The function also generates a scatter plot visualizing the training data and the test data color-coded by distance.
+## Key Steps
+The function takes in a filtered_test_df DataFrame, which contains the immunogenicity predictions for the proteins, and an optional parameter model_name to label the plot appropriately.
 
-### Usage Instructions
-*   Prepare Your Datasets: Ensure that both the training and test datasets are in the appropriate format, with relevant features such as 'Length' and 'Tm' included as columns.
+*   Identify Missing Scores: The function identifies which proteins have missing immunogenicity scores. Those indicate that they are *de novo* proteins within the dataset.
 
-*   Run the Distance Calculation: Call the compute_pairwise_distances function using your training and test DataFrames. 
-*   Visualize the Results: The function automatically generates a scatter plot that displays the training data and test data, with the test data points colored according to their distances to the training data.
+*   Count Predictions: It counts how many proteins are classified as immunogenic (marked as 1) and how many are classified as non-immunogenic (marked as 0). This helps in understanding the model's predictions and the distribution of these classes.
+
+*   Create Bar Plot: A bar plot is generated to visually represent the counts of immunogenic and non-immunogenic proteins. Each category is displayed in a different color, making it easy to distinguish between the two.
+
+## Usage Instructions 
+*   Prepare the DataFrame: Ensure that the filtered_test_df DataFrame is populated with the immunogenicity predictions from your model, including a column for the 'Immunogenic Score' and a unique identifier for each protein.
+*   Execute the Visualization Function: Run the de_novo_protein_predictions function and the plot_combined_de_novo_predictions function, providing the prepared DataFrame and display the bar plot that illustrates the distribution of immunogenicity predictions.
 
 # References
 
