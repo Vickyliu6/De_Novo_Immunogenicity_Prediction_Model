@@ -160,6 +160,18 @@ The heat-stability of *de novo* proteins is greatly increased compared to normal
 ## Visualization of Tm Distribution Across Models
 The visualize_combined_tm_distributions function generates an overlapping histogram plot comparing the normalized Tm distributions of three models (Models 1-3). The function automatically normalizes distributions using density scaling and uses consistent binning (20 bins) for comparison. 
 
+# Euclidean Distance Calculation
+A critical aspect of this project is the examination of key features that significantly influence immunogenicity predictions. Understanding how these features differ between natural and *de novo proteins* is essential for enhancing the accuracy of predictive models. The two primary features of this analysis are melting temperature (Tm) and peptide length, as highlighted by Quijano et al. (2020). This section evaluates the similarity between peptide sizes in the training and test datasets by calculating the Euclidean distance. This analysis is crucial for comparing top-performing immunogenic prediction models, particularly considering the variability in training strategies and their relevance in immunogenic determination. By assessing the distances between peptide sizes used in the training datasets and those present in the test dataset, we can gain insights into how well the models are likely to perform.
+
+### Key steps
+The compute_pairwise_distances function calculates the Euclidean distances between standardized features (specifically peptide length and melting temperature) in the training and test datasets. The function outputs an array of distances, where each value represents the distance between a test peptide and the closest training peptide. The function also generates a scatter plot visualizing the training data and the test data color-coded by distance.
+
+### Usage Instructions
+*   Prepare Your Datasets: Ensure that both the training and test datasets are in the appropriate format, with relevant features such as 'Length' and 'Tm' included as columns.
+
+*   Run the Distance Calculation: Call the compute_pairwise_distances function using your training and test DataFrames. 
+*   Visualize the Results: The function automatically generates a scatter plot that displays the training data and test data, with the test data points colored according to their distances to the training data.
+
 # Immunogenicity prediction
 An artificial neural network (ANN) from Dhanda *et al.* (2018) predicts the immunogenicity of protein sequences is performed in this section. Unlike traditional methods that rely on HLA binding affinity, this model predicts CD4+ T cell immunogenicity at the population level without needing HLA typing data. By training on validated datasets, it identifies key features that differentiate immunogenic proteins from non-immunogenic ones, resulting in an HLA-agnostic immunogenicity score. 
 
@@ -177,18 +189,6 @@ The function returns a binary list representing the immunogenicity status of eac
 *   The output file should be in the format of "CD4_Prediction_{file_num}.csv"
 *   Those files should be put in the Data folder; and directory path should be re-run to include those new files that include immunogenicity scores of the input protein sequences.
 *   The output from model 1 is then processed using a function called process_model_prediction. It iterates over the specified input files (named according to the base_filename), reading the unique protein numbers from each file. The unique protein numbers are adjusted based on their corresponding file number, and each immunogenic sequence is marked as '1' in the output list.
-
-# Euclidean Distance Calculation
-A critical aspect of this project is the examination of key features that significantly influence immunogenicity predictions. Understanding how these features differ between natural and *de novo proteins* is essential for enhancing the accuracy of predictive models. The two primary features of this analysis are melting temperature (Tm) and peptide length, as highlighted by Quijano et al. (2020). This section evaluates the similarity between peptide sizes in the training and test datasets by calculating the Euclidean distance. This analysis is crucial for comparing top-performing immunogenic prediction models, particularly considering the variability in training strategies and their relevance in immunogenic determination. By assessing the distances between peptide sizes used in the training datasets and those present in the test dataset, we can gain insights into how well the models are likely to perform.
-
-### Key steps
-The compute_pairwise_distances function calculates the Euclidean distances between standardized features (specifically peptide length and melting temperature) in the training and test datasets. The function outputs an array of distances, where each value represents the distance between a test peptide and the closest training peptide. The function also generates a scatter plot visualizing the training data and the test data color-coded by distance.
-
-### Usage Instructions
-*   Prepare Your Datasets: Ensure that both the training and test datasets are in the appropriate format, with relevant features such as 'Length' and 'Tm' included as columns.
-
-*   Run the Distance Calculation: Call the compute_pairwise_distances function using your training and test DataFrames. 
-*   Visualize the Results: The function automatically generates a scatter plot that displays the training data and test data, with the test data points colored according to their distances to the training data.
 
 ## Evaluation of Immunogenicity Prediction
 To assess the predictive power of the immunogenic predictor model, the predicted immunogenicity scores can be compared against experimental results of the control proteins included in the test dataset. This evaluation employs a confusion matrix to visualize the classifications of true immunogenic and non-immunogenic proteins, as well as a calculation of the balanced accuracy and the F1 score.
